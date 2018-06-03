@@ -45,16 +45,38 @@ peerDiscoveryProc
   :: NodeEnv    -- ^ Node Environment
   -> [NodeId]   -- ^ Nodes to discover
   -> Process ()
-peerDiscoveryProc = undefined
-  -- Discover all bootnodes
-  -- Add self as a peer to the nodes known peers
-  -- Register local peer discovery process"
+peerDiscoveryProc nodeEnv bootnodes = do
+    -- Register local peer discovery process"
+    register peerDiscovery =<< getSelfPid
+    -- Discover all bootnodes
+    mapM discoverPeer bootnodes
+    -- Add self as a peer to the nodes known peers
+    selfNid <- getSelfNode
+    liftIO (addPeer nodeEnv (Peer selfNid))
+    -- Forever wait for messages
+    forever $ receiveWait
+      [ match handleWhereIsReply
+      , match handlePeers
+      ]
   where
+    -- Received from nodes we've send whereis messages to
     handleWhereIsReply :: WhereIsReply -> Process ()
-    handleWhereIsReply  = undefined
+    handleWhereIsReply (WhereIsReply _ mpid) = do
+      case mpid of
+        Nothing  -> say "Received 'Nothing' as pid"
+        Just pid -> do
+          -- Add peer to our peer list
+          let peerNid = processNodeId pid
+          liftIO (addPeer nodeEnv (Peer peerNid))
+          -- Respond with all our known peers
+          knownPeers <- liftIO (askPeers nodeEnv)
+          nsendRemote peerNid peerDiscovery knownPeers
 
     handlePeers :: Peers -> Process ()
-    handlePeers = undefined
+    handlePeers potentialNewPeers = do
+      knownPeers <- liftIO (askPeers nodeEnv)
+      let newPeers = potentialNewPeers `S.difference` knownPeers
+      mapM_ (discoverPeer . unPeer) newPeers
 
 -- | Process that discovers a single peer
 discoverPeer

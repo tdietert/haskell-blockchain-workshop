@@ -62,6 +62,19 @@ executables:
     dependencies:
     - haskell-blockchain-workshop
 
+  example-cloud-haskell:
+    main: Example.hs
+    source-dirs: example
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-blockchain-workshop
+    default-extensions:
+    - OverloadedStrings
+    - NoImplicitPrelude 
+
 tests:
   haskell-blockchain-workshop-test:
     main:                Spec.hs
