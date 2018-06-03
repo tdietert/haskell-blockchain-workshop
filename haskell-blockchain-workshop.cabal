@@ -1,0 +1,205 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: da349e46959534da8330248e550e0759c9d10e782eb35b946a8135c4736d5e9a
+
+name:           haskell-blockchain-workshop
+version:        0.1.0.0
+description:    Please see the README on GitHub at <https://github.com/githubuser/haskell-blockchain-workshop#readme>
+homepage:       https://github.com/tdietert/haskell-blockchain-workshop#readme
+bug-reports:    https://github.com/tdietert/haskell-blockchain-workshop/issues
+author:         Thomas Dietert
+maintainer:     tdietert@mail.usf.edu
+copyright:      2018 Thomas Dietert
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    ChangeLog.md
+    README.md
+
+source-repository head
+  type: git
+  location: https://github.com/tdietert/haskell-blockchain-workshop
+
+library
+  hs-source-dirs:
+      src
+  default-extensions: DeriveGeneric OverloadedStrings TupleSections NoImplicitPrelude
+  ghc-options: -Wall
+  build-depends:
+      base >=4.7 && <5
+    , base58-bytestring
+    , binary
+    , bytestring
+    , configurator
+    , containers
+    , cryptonite
+    , distributed-process
+    , memory
+    , merkle-tree
+    , mtl
+    , network
+    , network-transport
+    , network-transport-tcp
+    , optparse-applicative
+    , protolude
+    , text
+    , transformers
+  exposed-modules:
+      Address
+      Block
+      Config
+      Cryptography
+      Encoding
+      Ledger
+      Network.P2P
+      Network.P2P.Discovery
+      Network.P2P.Message
+      Network.P2P.Node
+      Transaction
+  other-modules:
+      Paths_haskell_blockchain_workshop
+  default-language: Haskell2010
+
+executable haskell-blockchain-workshop-exe
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , base58-bytestring
+    , binary
+    , bytestring
+    , configurator
+    , containers
+    , cryptonite
+    , distributed-process
+    , haskell-blockchain-workshop
+    , memory
+    , merkle-tree
+    , mtl
+    , network
+    , network-transport
+    , network-transport-tcp
+    , optparse-applicative
+    , protolude
+    , text
+    , transformers
+  other-modules:
+      Paths_haskell_blockchain_workshop
+  default-language: Haskell2010
+
+test-suite haskell-blockchain-workshop-peer-discovery-test
+  type: exitcode-stdio-1.0
+  main-is: PeerDiscovery.hs
+  hs-source-dirs:
+      test/p2p/discovery
+  default-extensions: OverloadedStrings NoImplicitPrelude
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , base58-bytestring
+    , binary
+    , bytestring
+    , configurator
+    , containers
+    , cryptonite
+    , distributed-process
+    , haskell-blockchain-workshop
+    , memory
+    , merkle-tree
+    , mtl
+    , network
+    , network-transport
+    , network-transport-tcp
+    , optparse-applicative
+    , protolude
+    , random
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , transformers
+  other-modules:
+      Paths_haskell_blockchain_workshop
+  default-language: Haskell2010
+
+test-suite haskell-blockchain-workshop-peer-messaging-test
+  type: exitcode-stdio-1.0
+  main-is: PeerMessaging.hs
+  hs-source-dirs:
+      test/p2p/messaging
+  default-extensions: OverloadedStrings NoImplicitPrelude
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , base58-bytestring
+    , binary
+    , bytestring
+    , configurator
+    , containers
+    , cryptonite
+    , distributed-process
+    , haskell-blockchain-workshop
+    , memory
+    , merkle-tree
+    , mtl
+    , network
+    , network-transport
+    , network-transport-tcp
+    , optparse-applicative
+    , protolude
+    , random
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , transformers
+  other-modules:
+      Paths_haskell_blockchain_workshop
+  default-language: Haskell2010
+
+test-suite haskell-blockchain-workshop-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  hs-source-dirs:
+      test
+  default-extensions: OverloadedStrings NoImplicitPrelude
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N -main-is Spec
+  build-depends:
+      QuickCheck
+    , base >=4.7 && <5
+    , base58-bytestring
+    , binary
+    , bytestring
+    , configurator
+    , containers
+    , cryptonite
+    , distributed-process
+    , haskell-blockchain-workshop
+    , memory
+    , merkle-tree
+    , mtl
+    , network
+    , network-transport
+    , network-transport-tcp
+    , optparse-applicative
+    , protolude
+    , random
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , transformers
+  other-modules:
+      MineBlock
+      Serialization
+      Paths_haskell_blockchain_workshop
+  default-language: Haskell2010

@@ -1,0 +1,6 @@
+
+node {
+    hostname  = "127.0.1.1"
+    port      = 8001
+    bootnodes = ["127.0.1.1:8001"]
+}

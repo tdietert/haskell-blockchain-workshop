@@ -1,0 +1,122 @@
+name:                haskell-blockchain-workshop
+version:             0.1.0.0
+github:              "tdietert/haskell-blockchain-workshop"
+license:             BSD3
+author:              "Thomas Dietert"
+maintainer:          "tdietert@mail.usf.edu"
+copyright:           "2018 Thomas Dietert"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/haskell-blockchain-workshop#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- protolude
+- binary
+- text
+- bytestring
+- configurator 
+- optparse-applicative
+- base58-bytestring 
+- containers
+- mtl
+- memory
+- cryptonite
+- network
+- network-transport
+- network-transport-tcp
+- distributed-process
+- transformers
+- merkle-tree
+
+library:
+  source-dirs: src
+
+  default-extensions:
+    - DeriveGeneric
+    - OverloadedStrings
+    - TupleSections
+    - NoImplicitPrelude
+
+  ghc-options:
+    -Wall
+
+executables:
+  haskell-blockchain-workshop-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-blockchain-workshop
+
+tests:
+  haskell-blockchain-workshop-test:
+    main:                Spec.hs
+    source-dirs:         
+    - test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -main-is Spec
+    dependencies:
+    - haskell-blockchain-workshop
+    - QuickCheck
+    - tasty
+    - tasty-quickcheck
+    - tasty-hunit
+    - random
+    default-extensions:
+    - OverloadedStrings
+    - NoImplicitPrelude 
+  
+  haskell-blockchain-workshop-peer-discovery-test:
+    main:                PeerDiscovery.hs
+    source-dirs:         
+      - test/p2p/discovery
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-blockchain-workshop
+    - tasty
+    - QuickCheck
+    - tasty-quickcheck
+    - tasty-hunit
+    - random
+    default-extensions:
+    - OverloadedStrings
+    - NoImplicitPrelude 
+  
+  haskell-blockchain-workshop-peer-messaging-test:
+    main:                PeerMessaging.hs
+    source-dirs:         
+      - test/p2p/messaging
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - haskell-blockchain-workshop
+    - tasty
+    - QuickCheck
+    - tasty-quickcheck
+    - tasty-hunit
+    - random
+    default-extensions:
+    - OverloadedStrings
+    - NoImplicitPrelude 
