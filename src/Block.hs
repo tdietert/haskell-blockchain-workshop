@@ -154,7 +154,13 @@ mineBlock sk prevBlock txs = do
         -- To test your implementation run:
         -- $ stack test hs-blockchain-workshop:hs-blockchain-test
         proofOfWork :: BlockHeader -> BlockHeader
-        proofOfWork blockHdr = blockHdr
+        proofOfWork blockHdr
+          | expectedPrefix `isPrefixOf` hdrPrefix = blockHdr
+          | otherwise = proofOfWork (blockHdr { nonce = currNonce + 1 })
+          where
+            hdrPrefix      = show (hashBlockHeader blockHdr)
+            expectedPrefix = replicate difficulty '0'
+            currNonce      = nonce blockHdr
 
 -- | The "difficulty" of the current block is defined by:
 --     difficulty(block) = round(ln(index(block)))
