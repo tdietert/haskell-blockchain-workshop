@@ -247,8 +247,15 @@ applyBlock ledger prevBlock block = do
 
 -- TODO: Validate that the merkle root proposed by the block header matches
 -- the computed merkle root of the transaction list in the block:
-validateMerkleRoot :: Hash -> [Transaction] -> Either InvalidBlock ()
-validateMerkleRoot mroot txs = pure ()
+validateMerkleRoot
+  :: Hash                   -- ^ Merkle root of the block being "accepted"
+  -> [Transaction]          -- ^ List of transactions of the block being "accepted"
+  -> Either InvalidBlock () -- ^ Returns 'InvalidMerkleRoot' if the given merkle root doesn't match the computed one
+validateMerkleRoot mroot txs
+  | (mroot :: Hash) == computedMerkleRoot = Right ()
+  | otherwise = Left (InvalidMerkleRoot mroot computedMerkleRoot)
+  where
+    computedMerkleRoot = (computeMerkleRoot txs) :: Hash
 
 -- | Apply a block to the ledger state, validating all the valid block criteria
 -- that doesn't need access to the previous block:
@@ -273,6 +280,7 @@ applyBlockNoPrev ledger block = do
     -- 2) The first transaction must be a Reward transaction
     -- 3) The remaining transactions must *only* be transfer transactions
     -- 4) The non-empty ordered list of transactions must be accumulatively valid
+    validateTransactions :: Either InvalidBlock Ledger
     validateTransactions = do
       first InvalidTransactionList $
         case nonEmpty (transactions block) of
