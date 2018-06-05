@@ -79,40 +79,40 @@ messagingProc nodeEnv = do
   where
     -- When receiving a 'BlockMsg':
     --   - Attempt to apply the new block to the node state
-    --   - If successful
-    --       - prune the transaction pool
-    --       - query the sending node for more blocks
-    --   - Else
-    --       - report the error
-    --
-    --  helper functions:
-    --    - Network.P2P.Node.addBlock
-    --    - Network.P2P.Node.pruneTxPool
-    --    - mkGetBlockMsg
-    --    - nsendRemote
+    --   - If successful, query the sending node for more blocks
     handleBlockMsg :: BlockMsg -> Process ()
-    handleBlockMsg = undefined
+    handleBlockMsg (BlockMsg blk nid) = do
+      eRes <- liftIO (addBlock nodeEnv blk)
+      case eRes of
+        Left err -> say ("handleBlockMsg: " <> show err)
+        Right _  -> do
+          -- Remove stale transactions
+          _ <- liftIO (pruneTxPool nodeEnv)
+          -- Query the sender of the block for more blocks
+          getBlockMsg <- mkGetBlockMsg (index blk + 1)
+          nsendRemote nid messaging getBlockMsg
 
     -- When receiving a 'GetBlockMsg':
     --   - Query the current node state for the block at the queried index
     --   - If a block with that index exists, send it back to the querying node
-    --
-    --  helper functions:
-    --    - Network.P2P.Node.askBlock
-    --    - mkBlockMsg
-    --    - nsendRemote
     handleGetBlockMsg :: GetBlockMsg -> Process ()
-    handleGetBlockMsg = undefined
+    handleGetBlockMsg (GetBlockMsg idx nid) = do
+      eBlock <- liftIO (askBlock nodeEnv idx)
+      case eBlock of
+        Left err  -> say ("handleGetBlockMsg: " <> show err)
+        Right blk -> do
+          say $ "Sending with idx " <> show idx <> " to " <> show nid
+          nsendRemote nid messaging =<< mkBlockMsg blk
 
     -- When receiving a 'TransactionMsg':
     --   - Attempt to add the transaction to the mempool
-    --   - On failure, log the error
-    --
-    -- helper functions:
-    --   - Network.P2P.Node.addTxPool
-    --   - Control.Distributed.Process.say
+    --   - Broadcast the transaction to all other known peers
     handleTransactionMsg :: TransactionMsg -> Process ()
-    handleTransactionMsg = undefined
+    handleTransactionMsg txMsg@(TransactionMsg tx) = do
+      eRes <- liftIO (addTxPool nodeEnv tx)
+      case eRes of
+        Left err -> say ("handleTransactionMsg: " <> show err)
+        Right _  -> nsendPeers nodeEnv txMsg
 
 --------------------------------------------------------------------------------
 -- Network Actions
